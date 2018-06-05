@@ -1,0 +1,6 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="novo">20dp</dimen>
+    <dimen name="novo_txt">15sp</dimen>
+    <dimen name="novo_do_novo">40sp</dimen>
+</resources>

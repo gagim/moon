@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Moon</string>
+    <string name="action_settings">Settings</string>
+    <string name="titulo">Digite um titulo</string>
+    <string name="alterar">Alterar</string>
+    <string name="novo_titulo">Nova Anotação</string>
+    <string name="digite_sua_anotacao">Digite aqui sua anotação</string>
+    <string name="salvar">Salvar</string>
+</resources>
