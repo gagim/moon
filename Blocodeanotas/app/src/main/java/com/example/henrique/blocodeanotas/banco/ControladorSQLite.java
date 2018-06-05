@@ -16,19 +16,21 @@ public class ControladorSQLite {
         banco = new BancoSQLite(context);
     }
 
-    public void inserirAnotacao(String name, String mensagem) {
+    public void inserirAnotacao(String name, String mensagem, String audio) {
         db = banco.getWritableDatabase();
         valores.put(BancoSQLite.NOME_ANOTACAO, name);
         valores.put(BancoSQLite.MENSAGEM_ANOTACAO, mensagem);
+        valores.put(BancoSQLite.AUDIO_ANOTACAO, audio);
         db.insert(tabela,null,valores);
         db.close();
 
     }
 
-    public void alterarAnotacao(String nomeAnotacao, String mensagemAnotacao, int idAnotacao){
+    public void alterarAnotacao(String nomeAnotacao, String mensagemAnotacao, int idAnotacao, String audio){
         db = banco.getWritableDatabase();
         valores.put(BancoSQLite.NOME_ANOTACAO, nomeAnotacao);
         valores.put(BancoSQLite.MENSAGEM_ANOTACAO, mensagemAnotacao);
+        valores.put(BancoSQLite.AUDIO_ANOTACAO, audio);
         db.update(tabela,valores,"_id = " + idAnotacao,null);
         db.close();
     }

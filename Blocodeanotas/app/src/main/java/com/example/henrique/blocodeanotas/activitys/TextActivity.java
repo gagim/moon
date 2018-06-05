@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -15,10 +14,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.henrique.blocodeanotas.R;
@@ -34,13 +31,13 @@ public class TextActivity extends Activity {
     public static final int request_code = 1000;
     private MediaPlayer mediaPlayer;
     private MediaRecorder recorder;
-    private String arquivo;
-    private Boolean if_reproduzindo = false,if_pause = false,reproduzindo = false;
+    private String arquivo = "@";
+    private Boolean if_reproduzindo = false,if_pause = false;
     private AlertDialog bui;
     private  AlertDialog.Builder alertDialog;
     private View view;
 
-    private ImageView img_reproduzir;
+    private ImageView img_reproduzir,img_delete_audio;
     private EditText lblName,lblMensagem;
     private ControladorSQLite controller = new ControladorSQLite(this);
 
@@ -55,6 +52,7 @@ public class TextActivity extends Activity {
 
         img_new_gravacao = findViewById(R.id.img_new_gravacao);
 
+        img_delete_audio = findViewById(R.id.img_delete_audio);
 
         img_new_gravacao.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("InflateParams")
@@ -192,6 +190,8 @@ public class TextActivity extends Activity {
             case request_code:
             {
                 if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ){
+                    img_new_gravacao.setImageResource(R.drawable.ic_action_mic);
+                    img_new_gravacao.setEnabled(true);
                 }
                 else {
                     img_new_gravacao.setImageResource(R.drawable.ic_action_micoff);
@@ -217,7 +217,11 @@ public class TextActivity extends Activity {
             if (mensagem.length() > 200 || nome.length() > 10){
                 Toast.makeText(this, "Algum campo excede o limite de caracteres!", Toast.LENGTH_SHORT).show();
             }else {
-                controller.inserirAnotacao(nome, mensagem);
+                if (arquivo.equals("@")){
+                    controller.inserirAnotacao(nome, mensagem, "");
+                }else {
+                    controller.inserirAnotacao(nome, mensagem, arquivo);
+                }
                 Toast.makeText(this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
@@ -253,21 +257,27 @@ public class TextActivity extends Activity {
     }
 
     private void reproduzirAudio(){
-        if (reproduzindo){
-            mediaPlayer.pause();
-            img_reproduzir.setImageResource(R.drawable.ic_action_playback_play_white);
-        }else {
             mediaPlayer=new MediaPlayer();
             try {
                 mediaPlayer.setDataSource(arquivo);
                 mediaPlayer.prepare();
                 mediaPlayer.start();
-                reproduzindo = true;
-                img_reproduzir.setImageResource(R.drawable.ic_action_playback_stop);
             } catch (IOException e) {
                 e.printStackTrace();
-            }
         }
+    }
+
+    private void deletarAudio(){
+        if (recorder != null) {
+            recorder.reset();
+            img_reproduzir.setVisibility(View.GONE);
+            img_delete_audio.setVisibility(View.GONE);
+            img_new_gravacao.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void deletar(View view){
+        deletarAudio();
     }
 
     public void reproduzir(View view){
@@ -292,11 +302,14 @@ public class TextActivity extends Activity {
         SetupMediaRecorder();
         bui.dismiss();
        img_reproduzir.setVisibility(View.VISIBLE);
+       img_delete_audio.setVisibility(View.VISIBLE);
+       img_new_gravacao.setVisibility(View.GONE);
     }
 
     private void resetGravacao(){
         if (recorder != null){
             recorder.reset();
+            arquivo = "@";
             bui.dismiss();
         }else {
             bui.dismiss();

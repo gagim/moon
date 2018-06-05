@@ -13,10 +13,11 @@ public class BancoSQLite extends SQLiteOpenHelper {
     private static final String ID_ANOTACAO = "_id";
     public static final String NOME_ANOTACAO = "nome";
     public static final String MENSAGEM_ANOTACAO = "mensagem";
+    public static final String AUDIO_ANOTACAO = "audio";
 
 
     //versão
-    private static final int VERSAO = 3;
+    private static final int VERSAO = 4;
 
     BancoSQLite(Context ctx) {
         super(ctx, NOME_BANCO, null, VERSAO);
@@ -29,7 +30,8 @@ public class BancoSQLite extends SQLiteOpenHelper {
         String tabela = "CREATE TABLE IF NOT EXISTS "+ TABELA + "("
                 + ID_ANOTACAO + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + NOME_ANOTACAO  + " VARCHAR(10) not null, "
-                + MENSAGEM_ANOTACAO + " VARCHAR(200) not null "
+                + MENSAGEM_ANOTACAO + " VARCHAR(200) not null, "
+                + AUDIO_ANOTACAO + " VARCHAR(250) not null "
                 + ")";
 
         db.execSQL(tabela);

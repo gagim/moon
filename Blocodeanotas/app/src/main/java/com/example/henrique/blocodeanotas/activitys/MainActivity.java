@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -18,9 +20,13 @@ import android.widget.Toast;
 import com.example.henrique.blocodeanotas.R;
 import com.example.henrique.blocodeanotas.banco.ControladorSQLite;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private Cursor cursor;
+    private MediaPlayer mediaPlayer;
+    private ImageView img_pause_mostrar;
     private ControladorSQLite controladorSQLite = new ControladorSQLite(this);
 
     @Override
@@ -33,7 +39,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void pesquisar(){
         buscarDados();
         ListView lsAnotacoes = findViewById(R.id.ls_itens);
-        if (cursor.getCount() > 0) {
+        assert cursor != null;
+        if (cursor.getCount() > 0 ) {
             TextView semAnotacao = findViewById(R.id.semAnotacao);
             semAnotacao.setVisibility(View.GONE);
             if (cursor != null) {
@@ -116,8 +123,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void mostrarAnotacao(int idAnotacao){
-        @SuppressLint("Recycle")
-        Cursor cursor = controladorSQLite.buscarAnotacao(idAnotacao);
+        @SuppressLint("Recycle") final Cursor cursor = controladorSQLite.buscarAnotacao(idAnotacao);
         if (cursor.moveToNext()) {
             LayoutInflater li = LayoutInflater.from(this);
             @SuppressLint("InflateParams")
@@ -126,6 +132,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             AlertDialog bui = alertDialog.create();
             EditText editTituloAnotacao = view.findViewById(R.id.txt_titulo_anotacao);
             EditText editMensagemAnotacao = view.findViewById(R.id.txt_mensagem_anotacao);
+            final ImageView img_play_mostrar = view.findViewById(R.id.img_play_mostrar);
+            img_pause_mostrar = view.findViewById(R.id.img_pause_mostrar);
+            img_pause_mostrar.setEnabled(false);
             bui.setView(view);
             bui.create();
             bui.show();
@@ -133,8 +142,47 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String mensagemAnotacao = cursor.getString(2);
             editTituloAnotacao.setText(tituloAnotacao);
             editMensagemAnotacao.setText(mensagemAnotacao);
+
+            img_pause_mostrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pausarAudio();
+                }
+            });
+
+            final String audio = cursor.getString(3);
+            if (audio.contains("@")){
+                img_play_mostrar.setImageResource(R.drawable.ic_action_micoff);
+            }else {
+                img_play_mostrar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        reproduzirAudio(audio);
+                    }
+                });
+            }
         }else {
             Toast.makeText(getApplicationContext(), "Não possue nenhum registro", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void pausarAudio(){
+        mediaPlayer.pause();
+        img_pause_mostrar.setImageResource(R.drawable.ic_action_playback_pause_red);
+        img_pause_mostrar.setEnabled(false);
+    }
+
+    private void reproduzirAudio(String arquivo){
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(arquivo);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            img_pause_mostrar.setImageResource(R.drawable.ic_action_playback_pause);
+            img_pause_mostrar.setEnabled(true);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
