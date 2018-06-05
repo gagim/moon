@@ -29,15 +29,16 @@
         tools:layout_editor_absoluteY="0dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/txt_apresentacao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
-            android:text="Minhas Anotações"
+            android:text="Moon Anotações"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/novo" />
+            android:textSize="@dimen/novo"
+            android:visibility="gone" />
 
         <ListView
             android:id="@+id/ls_itens"
@@ -45,7 +46,7 @@
             android:layout_height="match_parent"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/txt_apresentacao"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="0dp" />
 

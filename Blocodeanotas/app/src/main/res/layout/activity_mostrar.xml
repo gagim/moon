@@ -85,7 +85,6 @@
                     android:id="@+id/img_delete_audio_alterar"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:visibility="gone"
                     android:background="@drawable/button"
                     android:onClick="deletar"
                     android:src="@drawable/ic_action_micoff" />

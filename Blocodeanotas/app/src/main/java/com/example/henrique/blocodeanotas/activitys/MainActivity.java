@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ListView lsAnotacoes = findViewById(R.id.ls_itens);
         assert cursor != null;
         if (cursor.getCount() > 0 ) {
+            TextView moon = findViewById(R.id.txt_apresentacao);
+            moon.setVisibility(View.VISIBLE);
             TextView semAnotacao = findViewById(R.id.semAnotacao);
             semAnotacao.setVisibility(View.GONE);
             if (cursor != null) {
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             final String audio = cursor.getString(3);
             if (audio.contains("@")){
+                img_pause_mostrar.setVisibility(View.GONE);
                 img_play_mostrar.setImageResource(R.drawable.ic_action_micoff);
             }else {
                 img_play_mostrar.setOnClickListener(new View.OnClickListener() {

@@ -17,7 +17,7 @@ public class BancoSQLite extends SQLiteOpenHelper {
 
 
     //versão
-    private static final int VERSAO = 4;
+    private static final int VERSAO = 5;
 
     BancoSQLite(Context ctx) {
         super(ctx, NOME_BANCO, null, VERSAO);

@@ -218,7 +218,7 @@ public class TextActivity extends Activity {
                 Toast.makeText(this, "Algum campo excede o limite de caracteres!", Toast.LENGTH_SHORT).show();
             }else {
                 if (arquivo.equals("@")){
-                    controller.inserirAnotacao(nome, mensagem, "");
+                    controller.inserirAnotacao(nome, mensagem, "@");
                 }else {
                     controller.inserirAnotacao(nome, mensagem, arquivo);
                 }
@@ -269,6 +269,7 @@ public class TextActivity extends Activity {
 
     private void deletarAudio(){
         if (recorder != null) {
+            arquivo = "@";
             recorder.reset();
             img_reproduzir.setVisibility(View.GONE);
             img_delete_audio.setVisibility(View.GONE);
@@ -309,7 +310,6 @@ public class TextActivity extends Activity {
     private void resetGravacao(){
         if (recorder != null){
             recorder.reset();
-            arquivo = "@";
             bui.dismiss();
         }else {
             bui.dismiss();

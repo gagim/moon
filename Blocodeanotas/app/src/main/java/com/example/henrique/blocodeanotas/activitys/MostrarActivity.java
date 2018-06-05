@@ -1,13 +1,18 @@
 package com.example.henrique.blocodeanotas.activitys;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +31,7 @@ public class MostrarActivity extends Activity {
     private ImageView img_new_gravacao;
     private MediaPlayer mediaPlayer;
     private MediaRecorder recorder;
+    public static final int request_code = 1000;
     private String arquivo= "@",subArquivo;
     private Boolean if_reproduzindo = false,if_pause = false;
     private AlertDialog bui;
@@ -62,6 +68,7 @@ public class MostrarActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+                if (checkPermissionFromDevice()){
 
                     LayoutInflater li = LayoutInflater.from(MostrarActivity.this);
                     view = li.inflate(R.layout.layout_gravacao, null);
@@ -163,10 +170,47 @@ public class MostrarActivity extends Activity {
                     bui.create();
                     bui.show();
                 }
+             else {
+
+                requestPermissionFromDevice();
+            }
+            }
+
         });
 
         pesquisar();
         onDestroy();
+    }
+
+    private void requestPermissionFromDevice() {
+        ActivityCompat.requestPermissions(this,new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.RECORD_AUDIO},
+                request_code);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case request_code:
+            {
+                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ){
+                    img_new_gravacao.setImageResource(R.drawable.ic_action_mic);
+                    img_new_gravacao.setEnabled(true);
+                }
+                else {
+                    img_new_gravacao.setImageResource(R.drawable.ic_action_micoff);
+                    img_new_gravacao.setEnabled(false);
+                }
+            }
+            break;
+        }
+    }
+
+    private boolean checkPermissionFromDevice() {
+        int storage_permission= ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int recorder_permssion=ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO);
+        return storage_permission == PackageManager.PERMISSION_GRANTED && recorder_permssion == PackageManager.PERMISSION_GRANTED;
     }
 
     public void pesquisar(){
@@ -178,6 +222,9 @@ public class MostrarActivity extends Activity {
             nome.setText(nomeAnotacao);
             mensagem.setText(mensagemAnotacao);
             subArquivo = cursor.getString(3);
+            if (subArquivo.contains("@")){
+                img_delete_audio.setVisibility(View.GONE);
+            }
         }else {
             Toast.makeText(getApplicationContext(), "Não possue nenhum registro", Toast.LENGTH_SHORT).show();
         }
@@ -202,6 +249,8 @@ public class MostrarActivity extends Activity {
     public void alterarAnotacao(){
         if (arquivo.contains("@")){
             controladorSQLite.alterarAnotacao(nomeAnotacao,mensagemAnotacao,idAnotacao,subArquivo);
+        }else if (arquivo.contains("!")) {
+            controladorSQLite.alterarAnotacao(nomeAnotacao,mensagemAnotacao,idAnotacao,"@");
         }else {
             controladorSQLite.alterarAnotacao(nomeAnotacao,mensagemAnotacao,idAnotacao,arquivo);
         }
@@ -243,14 +292,16 @@ public class MostrarActivity extends Activity {
     }
 
     private void deletarAudio(){
-        if (recorder != null) {
-            arquivo = "@";
-            Toast.makeText(MostrarActivity.this,arquivo,Toast.LENGTH_SHORT).show();
-            recorder.reset();
+            if (recorder != null) {
+                arquivo = "@";
+                recorder.reset();
+            }else {
+                arquivo = "!";
+            }
             img_reproduzir.setVisibility(View.GONE);
             img_delete_audio.setVisibility(View.GONE);
             img_new_gravacao.setVisibility(View.VISIBLE);
-        }
+        Toast.makeText(MostrarActivity.this,"Audio anterior deletado!",Toast.LENGTH_SHORT).show();
     }
 
     public void deletar(View view){
