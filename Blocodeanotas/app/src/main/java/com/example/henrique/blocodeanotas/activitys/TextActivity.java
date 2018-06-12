@@ -214,7 +214,7 @@ public class TextActivity extends Activity {
         if (nome.isEmpty() || mensagem.isEmpty()){
             Toast.makeText(this, "Nenhum campo deve está vazio!", Toast.LENGTH_SHORT).show();
         }else {
-            if (mensagem.length() > 200 || nome.length() > 10){
+            if (mensagem.length() > 1000 || nome.length() > 10){
                 Toast.makeText(this, "Algum campo excede o limite de caracteres!", Toast.LENGTH_SHORT).show();
             }else {
                 if (arquivo.equals("@")){

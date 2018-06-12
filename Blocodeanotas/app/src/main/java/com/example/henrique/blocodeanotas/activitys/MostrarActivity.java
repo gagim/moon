@@ -236,11 +236,11 @@ public class MostrarActivity extends Activity {
         if (nomeAnotacao.isEmpty() || mensagemAnotacao.isEmpty()){
             Toast.makeText(this, "Nenhum campo deve está vazio!", Toast.LENGTH_SHORT).show();
         }else {
-            if (mensagem.length() > 200 || nome.length() > 10) {
+            if (mensagem.length() > 10000 || nome.length() > 10) {
                 Toast.makeText(this, "Algum campo excede o limite de caracteres!", Toast.LENGTH_SHORT).show();
             } else {
                 alterarAnotacao();
-                Toast.makeText(this, "Sucesso ao atlterar!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Sucesso ao alterar!", Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
         }
