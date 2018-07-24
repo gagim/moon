@@ -313,7 +313,7 @@ public class MostrarActivity extends Activity {
     }
 
     private void gravar(){
-        arquivo= Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+
+        arquivo= Environment.getExternalStorageDirectory().getAbsolutePath()+"/audiosMoon/"+
                 UUID.randomUUID()+"AudioFile.3gp";
 
         SetupMediaRecorder();
